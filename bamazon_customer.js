@@ -3,12 +3,14 @@ const mysql = require("mysql");
 require("dotenv").config();
 const MySqlUser = require("./mySql_user.js");
 
+let my_username = MySqlUser.user.username;
+let my_password = MySqlUser.user.password;
 
 // Setup connection to mySql
 var connection = mysql.createConnection({
   host     : 'localhost',
-  user     : 'root',
-  password : "Soccer267972",
+  user     : my_username,
+  password : my_password,
   database : 'bamazon_db'
 });
 // Establish connection
@@ -62,7 +64,7 @@ function buyItem() {
 }
 function updateItem(id,quan) {
   query = "UPDATE products SET stock_quantity=stock_quantity-? WHERE item_id=?";
-  connection.query(query,[quantity,itemID],function(err,data){
+  connection.query(query,[quan,id],function(err,data){
     if(err) throw err;
 
     console.log("After",data)
@@ -82,10 +84,17 @@ function buyItem_mySql(itemID,quantity) {
       console.log("We don't have enough in stock!");
       flag_quantity = false;
     }
-    if(flag_quantity) updateItem(itemID,quantity);
+    if(flag_quantity){ //updateItem(itemID,quantity);
+      query = "UPDATE products SET stock_quantity=stock_quantity-? WHERE item_id=?";
+      connection.query(query,[quantity,itemID],function(err,data){
+        if(err) throw err;
+    
+        console.log("After",data)
+        connection.end();
+      })
+    }
   })
 
-  connection.end();
 }
 
 
