@@ -8,7 +8,7 @@ const MySqlUser = require("./mySql_user.js");
 var connection = mysql.createConnection({
   host     : 'localhost',
   user     : 'root',
-  password : "Soccer705510",
+  password : "Soccer267972",
   database : 'bamazon_db'
 });
 // Establish connection
@@ -31,6 +31,7 @@ function displayAllItems(){
       console.log("ID#"+data[i].item_id+", "+data[i].product_name+", "+data[i].department_name+" $"+data[i].price+", "+data[i].stock_quantity+" in stock.\n" )
     }
     console.log("\n=========================================\n")
+    buyItem()
   })
   
   // connection.end();
@@ -59,9 +60,18 @@ function buyItem() {
 
   })
 }
+function updateItem(id,quan) {
+  query = "UPDATE products SET stock_quantity=stock_quantity-? WHERE item_id=?";
+  connection.query(query,[quantity,itemID],function(err,data){
+    if(err) throw err;
+
+    console.log("After",data)
+  })
+
+}
 
 function buyItem_mySql(itemID,quantity) {
-  let flag_quantity = false;
+  let flag_quantity = true;
   let query = "SELECT * FROM products WHERE item_ID=?";
   connection.query(query,[itemID],function(err,data){
     if(err) throw err;
@@ -72,20 +82,12 @@ function buyItem_mySql(itemID,quantity) {
       console.log("We don't have enough in stock!");
       flag_quantity = false;
     }
+    if(flag_quantity) updateItem(itemID,quantity);
   })
-  
-  if(flag_quantity){
-    query = "UPDATE products SET stock_quantity=stock_quantity-? WHERE item_id=?";
-    connection.query(query,[quantity,itemID],function(err,data){
-      if(err) throw err;
 
-      console.log("After",data)
-    })
-  }
   connection.end();
 }
 
 
 displayAllItems()
 console.log("***************************************")
-buyItem()
