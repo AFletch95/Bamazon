@@ -108,7 +108,7 @@ function increaseInventory() {
         query = "UPDATE products SET stock_quantity=stock_quantity+? WHERE item_id=?";
         connection.query(query,[user.stockToAdd,user.idNumber],function(err,data){
           if(err) throw err;
-          console.log('\nStock updated',data+'\n')
+          console.log('\nStock updated\n')
           mainMenu();
         })
       }
@@ -147,7 +147,7 @@ function addProductToDatabase(name,department,price,stock){
                 "VALUES(?,?,?,?);"
   connection.query(query,[name,department,price,stock],function(err,data){
     if(err) throw err;
-    console.log("New product",data);
+    console.log("New product added!");
     mainMenu();
   })
 }

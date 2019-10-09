@@ -35,8 +35,6 @@ function displayAllItems(){
     console.log("\n=========================================\n")
     buyItem()
   })
-  
-  // connection.end();
 }
 function buyItem() {
   inquirer.prompt([
@@ -62,35 +60,25 @@ function buyItem() {
 
   })
 }
-function updateItem(id,quan) {
-  query = "UPDATE products SET stock_quantity=stock_quantity-? WHERE item_id=?";
-  connection.query(query,[quan,id],function(err,data){
-    if(err) throw err;
-
-    console.log("After",data)
-  })
-
-}
 
 function buyItem_mySql(itemID,quantity) {
   let flag_quantity = true;
   let query = "SELECT * FROM products WHERE item_ID=?";
   connection.query(query,[itemID],function(err,data){
     if(err) throw err;
-    console.log("Before",data)
 
     //Check to see if wanted quantity is avaliable
     if(data[0].stock_quantity<quantity){
       console.log("We don't have enough in stock!");
-      flag_quantity = false;
+      connection.end();
     }
-    if(flag_quantity){ //updateItem(itemID,quantity);
+    else{ //updateItem(itemID,quantity);
       query = "UPDATE products SET stock_quantity=stock_quantity-? WHERE item_id=?";
       connection.query(query,[quantity,itemID],function(err,data){
         if(err) throw err;
-    
-        console.log("After",data)
+        console.log("Done!")
         connection.end();
+       // console.log("After",data)
       })
     }
   })
